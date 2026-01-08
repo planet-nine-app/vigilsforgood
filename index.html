@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Justice for Renee Nicole Good</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="hero-image">
+                <img src="renee-hero.jpg" alt="Renee Nicole Good">
+            </div>
+            <h1 class="title">Justice for Renee Nicole Good</h1>
+            <p class="subtitle">
+                Renee Nicole Good, 37, mother of three, was murdered by ICE in Minneapolis.
+                She was a U.S. citizen caring for her neighbors when she was killed.
+            </p>
+        </header>
+
+        <main class="cta-section">
+            <h2 class="cta-heading">Coordinate vigils in your community</h2>
+            <p class="cta-description">Honor Renee's memory and demand accountability</p>
+
+            <form id="zipcode-form" class="zipcode-form">
+                <div class="input-group">
+                    <input
+                        type="text"
+                        id="zipcode"
+                        name="zipcode"
+                        placeholder="Enter your zipcode"
+                        pattern="[0-9]{5}"
+                        maxlength="5"
+                        required
+                        class="zipcode-input"
+                    >
+                </div>
+                <div class="button-group">
+                    <button type="button" id="post-vigil-btn" class="submit-btn primary">Post a Vigil</button>
+                    <button type="submit" class="submit-btn secondary">Find a Vigil</button>
+                </div>
+                <p class="error-message" id="error-message"></p>
+            </form>
+        </main>
+
+        <footer class="footer">
+            <p>Coordinating vigils to remember Renee and demand accountability</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

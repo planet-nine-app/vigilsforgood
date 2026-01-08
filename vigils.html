@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vigils for Renee Nicole Good</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="vigils.css">
+</head>
+<body>
+    <div class="container vigils-container">
+        <header class="vigils-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <h1 class="title small">Justice for Renee Nicole Good</h1>
+                    <p class="zipcode-display">Zipcode: <span id="current-zipcode"></span></p>
+                    <button id="change-zipcode" class="change-zipcode-btn">Change Zipcode</button>
+                </div>
+                <div class="header-right">
+                    <button id="add-vigil-btn-header" class="btn btn-primary">Post a Vigil</button>
+                </div>
+            </div>
+        </header>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Loading vigils...</p>
+        </div>
+
+        <div id="error" class="error-container hidden">
+            <p class="error-text" id="error-text"></p>
+            <button onclick="location.reload()" class="btn-retry">Try Again</button>
+        </div>
+
+        <main id="vigils-content" class="vigils-content hidden">
+            <section class="location-section">
+                <h2 class="section-title">Your Location</h2>
+                <div id="location-info" class="location-card">
+                    <p class="loading-text">Loading location info...</p>
+                </div>
+            </section>
+
+            <section class="about-section">
+                <div class="about-card">
+                    <h2 class="section-title">Remembering Renee</h2>
+                    <p>Renee Nicole Good, 37, was a U.S. citizen, mother of three, and a caring neighbor. She was murdered by ICE while caring for her neighbors in Minneapolis.</p>
+                    <p>These vigils are spaces to remember Renee, support her family, and demand accountability.</p>
+                </div>
+            </section>
+
+            <section class="vigils-section">
+                <h2 class="section-title">Vigils in Your Area</h2>
+                <p class="section-description">Community vigils to remember Renee and demand justice</p>
+                <div id="vigils-list" class="vigils-list">
+                    <p class="loading-text">Loading vigils...</p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>Coordinating vigils to remember Renee and demand accountability</p>
+        </footer>
+    </div>
+
+    <!-- Add Vigil Modal -->
+    <div id="add-vigil-modal" class="modal hidden">
+        <div class="modal-backdrop" onclick="closeAddVigilModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Post a Vigil</h2>
+                <button type="button" class="btn-close" onclick="closeAddVigilModal()">&times;</button>
+            </div>
+            <form id="add-vigil-form">
+                <p class="modal-description">Share details about a vigil in your community.</p>
+                <div class="form-group">
+                    <label for="vigil-location">Location</label>
+                    <input
+                        type="text"
+                        id="vigil-location"
+                        placeholder="Park name, address, or landmark"
+                        required
+                        class="form-input"
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="vigil-date">Date</label>
+                    <input
+                        type="date"
+                        id="vigil-date"
+                        required
+                        class="form-input"
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="vigil-time">Time</label>
+                    <input
+                        type="time"
+                        id="vigil-time"
+                        required
+                        class="form-input"
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="vigil-description">Description (optional)</label>
+                    <textarea
+                        id="vigil-description"
+                        placeholder="Additional details about the vigil..."
+                        rows="3"
+                        class="form-input"
+                    ></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="vigil-contact">Contact Info (optional)</label>
+                    <input
+                        type="text"
+                        id="vigil-contact"
+                        placeholder="Email or phone for questions"
+                        class="form-input"
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="organizer-name">Your Name (optional)</label>
+                    <input
+                        type="text"
+                        id="organizer-name"
+                        placeholder="Anonymous"
+                        class="form-input"
+                    >
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-ghost" onclick="closeAddVigilModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Post Vigil</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Vigil Details Modal -->
+    <div id="view-vigil-modal" class="modal hidden">
+        <div class="modal-backdrop" onclick="closeViewVigilModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Vigil Details</h2>
+                <button type="button" class="btn-close" onclick="closeViewVigilModal()">&times;</button>
+            </div>
+            <div id="vigil-details" class="vigil-details">
+                <p class="loading-text">Loading details...</p>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-primary" onclick="closeViewVigilModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="bdo-client.js"></script>
+    <script src="vigils.js"></script>
+</body>
+</html>
