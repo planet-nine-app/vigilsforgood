@@ -1,6 +1,7 @@
 // Get zipcode from URL only (no localStorage persistence)
 const urlParams = new URLSearchParams(window.location.search);
 const zipcode = urlParams.get('zip');
+const shouldPost = urlParams.get('post') === 'true';
 
 const loadingEl = document.getElementById('loading');
 const errorEl = document.getElementById('error');
@@ -224,6 +225,11 @@ document.getElementById('add-vigil-form').addEventListener('submit', async (e) =
         // Show content, hide loading
         loadingEl.classList.add('hidden');
         vigilsContentEl.classList.remove('hidden');
+
+        // If post=true parameter, automatically open the add vigil modal
+        if (shouldPost) {
+            openAddVigilModal();
+        }
     } catch (error) {
         console.error('Error loading vigils:', error);
         showError('Unable to load vigils. Please check your zipcode and try again.');
