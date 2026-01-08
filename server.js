@@ -322,7 +322,7 @@ app.get('/admin', async (req, res) => {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vigil Moderation - Justice for Renee Nicole Good</title>
+    <title>Vigil Moderation - Vigils for Renee Nicole Good</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
