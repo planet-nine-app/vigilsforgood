@@ -365,22 +365,14 @@ app.get('/api/vigils', async (req, res) => {
     }
 });
 
-// Get vigil counts (total and today)
+// Get vigil count (total)
 app.get('/api/vigils-count', async (req, res) => {
     try {
         const allVigils = Object.values(vigilsData.vigils);
         const totalCount = allVigils.length;
 
-        // Get today's date in YYYY-MM-DD format
-        const today = new Date();
-        const todayStr = today.toISOString().split('T')[0];
-
-        // Count vigils happening today
-        const todayCount = allVigils.filter(vigil => vigil.date === todayStr).length;
-
         res.json({
-            total: totalCount,
-            today: todayCount
+            total: totalCount
         });
     } catch (error) {
         console.error('Error fetching vigil counts:', error);
