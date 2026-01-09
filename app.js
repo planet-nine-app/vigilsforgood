@@ -53,3 +53,25 @@ form.addEventListener('submit', async (e) => {
 document.getElementById('zipcode').addEventListener('input', () => {
     errorMessage.textContent = '';
 });
+
+// Fetch and display vigil counts
+async function fetchVigilCounts() {
+    try {
+        const response = await fetch('/api/vigils-count');
+        if (!response.ok) {
+            throw new Error('Failed to fetch vigil counts');
+        }
+
+        const data = await response.json();
+
+        // Update the counter display
+        document.getElementById('total-vigils').textContent = data.total;
+        document.getElementById('today-vigils').textContent = data.today;
+    } catch (error) {
+        console.error('Error fetching vigil counts:', error);
+        // Keep the dash placeholders if there's an error
+    }
+}
+
+// Load counts on page load
+fetchVigilCounts();

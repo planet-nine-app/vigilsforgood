@@ -195,7 +195,56 @@ header {
     font-size: 0.95rem;
 }
 
+/* Vigil Counter */
+.vigil-counter {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 32px;
+    padding: 20px;
+    background: var(--bg-mid);
+    border-radius: 12px;
+    border: 1px solid rgba(0, 217, 255, 0.2);
+}
+
+.counter-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.counter-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary);
+    line-height: 1;
+}
+
+.counter-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
 /* Responsive */
+@media (min-width: 768px) {
+    body {
+        position: relative;
+    }
+
+    .vigil-counter {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        margin-top: 0;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    }
+}
+
 @media (min-width: 600px) {
     .button-group {
         flex-direction: row;

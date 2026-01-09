@@ -30,6 +30,55 @@ const VIGILS_HASH = 'justiceforgood-all-vigils';
 const KEYS_FILE = path.join(__dirname, '.bdo-keys.json');
 const ADMIN_PUBKEY = '030202e359413cdf78d8202e80ebec05e7b2edc51750de45a8eb9326e9f824d7b8';
 
+// Cache for zipcode coordinates to reduce API calls
+const zipcodeCoordinatesCache = new Map();
+
+// Calculate distance between two coordinates using Haversine formula
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 3959; // Earth's radius in miles
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+}
+
+function toRad(degrees) {
+    return degrees * (Math.PI / 180);
+}
+
+// Get coordinates for a zipcode (with caching)
+async function getZipcodeCoordinates(zipcode) {
+    // Check cache first
+    if (zipcodeCoordinatesCache.has(zipcode)) {
+        return zipcodeCoordinatesCache.get(zipcode);
+    }
+
+    try {
+        const response = await fetch(`https://api.zippopotam.us/us/${zipcode}`);
+        if (!response.ok) {
+            return null;
+        }
+
+        const data = await response.json();
+        const place = data.places[0];
+        const coords = {
+            lat: parseFloat(place.latitude),
+            lon: parseFloat(place.longitude)
+        };
+
+        // Cache the result
+        zipcodeCoordinatesCache.set(zipcode, coords);
+        return coords;
+    } catch (error) {
+        console.error(`Error fetching coordinates for zipcode ${zipcode}:`, error);
+        return null;
+    }
+}
+
 // Initialize sessionless keys (persistent across server restarts)
 let keys = null;
 
@@ -248,19 +297,53 @@ app.get('/api/bdo/:uuid', async (req, res) => {
     }
 });
 
-// Get all vigils for a zipcode
+// Get all vigils for a zipcode (within 10-mile radius)
 app.get('/api/vigils/:zipcode', async (req, res) => {
     const { zipcode } = req.params;
+    const RADIUS_MILES = 10;
 
     try {
-        const vigilsForZipcode = Object.values(vigilsData.vigils).filter(
-            vigil => vigil.zipcode === zipcode
-        );
+        // Get coordinates for the search zipcode
+        const searchCoords = await getZipcodeCoordinates(zipcode);
+
+        if (!searchCoords) {
+            return res.status(400).json({ error: 'Invalid zipcode or coordinates not found' });
+        }
+
+        // Get all vigils
+        const allVigils = Object.values(vigilsData.vigils);
+
+        // Filter vigils within radius
+        const vigilsWithDistance = [];
+
+        for (const vigil of allVigils) {
+            const vigilCoords = await getZipcodeCoordinates(vigil.zipcode);
+
+            if (vigilCoords) {
+                const distance = calculateDistance(
+                    searchCoords.lat,
+                    searchCoords.lon,
+                    vigilCoords.lat,
+                    vigilCoords.lon
+                );
+
+                if (distance <= RADIUS_MILES) {
+                    vigilsWithDistance.push({
+                        ...vigil,
+                        distance: parseFloat(distance.toFixed(1))
+                    });
+                }
+            }
+        }
+
+        // Sort by distance (closest first)
+        vigilsWithDistance.sort((a, b) => a.distance - b.distance);
 
         res.json({
             zipcode,
-            vigils: vigilsForZipcode,
-            count: vigilsForZipcode.length
+            searchRadius: RADIUS_MILES,
+            vigils: vigilsWithDistance,
+            count: vigilsWithDistance.length
         });
     } catch (error) {
         console.error('Error fetching vigils for zipcode:', error);
@@ -279,6 +362,29 @@ app.get('/api/vigils', async (req, res) => {
     } catch (error) {
         console.error('Error fetching all vigils:', error);
         res.status(500).json({ error: 'Failed to fetch vigils' });
+    }
+});
+
+// Get vigil counts (total and today)
+app.get('/api/vigils-count', async (req, res) => {
+    try {
+        const allVigils = Object.values(vigilsData.vigils);
+        const totalCount = allVigils.length;
+
+        // Get today's date in YYYY-MM-DD format
+        const today = new Date();
+        const todayStr = today.toISOString().split('T')[0];
+
+        // Count vigils happening today
+        const todayCount = allVigils.filter(vigil => vigil.date === todayStr).length;
+
+        res.json({
+            total: totalCount,
+            today: todayCount
+        });
+    } catch (error) {
+        console.error('Error fetching vigil counts:', error);
+        res.status(500).json({ error: 'Failed to fetch vigil counts' });
     }
 });
 
