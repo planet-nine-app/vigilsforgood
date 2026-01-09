@@ -74,3 +74,58 @@ async function fetchVigilCounts() {
 
 // Load count on page load
 fetchVigilCounts();
+
+// Format date and time for display
+function formatVigilDateTime(date, time) {
+    const [year, month, day] = date.split('-').map(num => parseInt(num));
+    const vigilDate = new Date(year, month - 1, day);
+
+    const dateStr = vigilDate.toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric'
+    });
+
+    const [hours, minutes] = time.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour % 12 || 12;
+    const timeStr = `${displayHour}:${minutes} ${ampm}`;
+
+    return `${dateStr} at ${timeStr}`;
+}
+
+// Fetch and display recent vigils
+async function fetchRecentVigils() {
+    try {
+        const response = await fetch('/api/vigils-recent');
+        if (!response.ok) {
+            throw new Error('Failed to fetch recent vigils');
+        }
+
+        const data = await response.json();
+        const vigilsListEl = document.getElementById('recent-vigils-list');
+
+        if (data.vigils.length === 0) {
+            vigilsListEl.innerHTML = '<p class="loading-text">No vigils yet. Be the first to post one!</p>';
+            return;
+        }
+
+        // Render vigil cards
+        vigilsListEl.innerHTML = data.vigils.map(vigil => `
+            <div class="recent-vigil-card">
+                <div class="recent-vigil-location">${vigil.location}</div>
+                <div class="recent-vigil-datetime">${formatVigilDateTime(vigil.date, vigil.time)}</div>
+                <div class="recent-vigil-zipcode">Zipcode: ${vigil.zipcode}</div>
+            </div>
+        `).join('');
+
+    } catch (error) {
+        console.error('Error fetching recent vigils:', error);
+        document.getElementById('recent-vigils-list').innerHTML =
+            '<p class="loading-text">Unable to load recent vigils</p>';
+    }
+}
+
+// Load recent vigils on page load
+fetchRecentVigils();

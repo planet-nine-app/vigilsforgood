@@ -380,6 +380,38 @@ app.get('/api/vigils-count', async (req, res) => {
     }
 });
 
+// Get recent vigils (last 3 added) with location data
+app.get('/api/vigils-recent', async (req, res) => {
+    try {
+        const allVigils = Object.values(vigilsData.vigils);
+
+        // Sort by createdAt timestamp (newest first)
+        const sortedVigils = allVigils.sort((a, b) => b.createdAt - a.createdAt);
+
+        // Get last 3 vigils
+        const recentVigils = sortedVigils.slice(0, 3);
+
+        // Fetch coordinates for each vigil
+        const vigilsWithCoords = await Promise.all(
+            recentVigils.map(async (vigil) => {
+                const coords = await getZipcodeCoordinates(vigil.zipcode);
+                return {
+                    ...vigil,
+                    coordinates: coords
+                };
+            })
+        );
+
+        res.json({
+            vigils: vigilsWithCoords,
+            count: vigilsWithCoords.length
+        });
+    } catch (error) {
+        console.error('Error fetching recent vigils:', error);
+        res.status(500).json({ error: 'Failed to fetch recent vigils' });
+    }
+});
+
 // Admin moderation route
 app.get('/admin', async (req, res) => {
     const { timestamp, signature } = req.query;
