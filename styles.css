@@ -29,7 +29,7 @@ body {
 }
 
 .container {
-    max-width: 600px;
+    max-width: 900px;
     width: 100%;
     text-align: center;
 }
@@ -38,17 +38,62 @@ header {
     margin-bottom: 60px;
 }
 
+.hero-images {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    margin-top: 40px;
+}
+
+.hero-person {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .hero-image {
-    margin-bottom: 32px;
+    margin-bottom: 20px;
 }
 
 .hero-image img {
     width: 100%;
-    max-width: 400px;
+    max-width: 300px;
     height: auto;
     border-radius: 12px;
     box-shadow: 0 8px 32px rgba(0, 217, 255, 0.2);
     border: 3px solid rgba(0, 217, 255, 0.3);
+}
+
+.person-name {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 8px;
+}
+
+.person-info {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    font-style: italic;
+}
+
+.person-story {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 400px;
+}
+
+@media (min-width: 768px) {
+    .hero-images {
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+    }
+
+    .hero-image img {
+        max-width: 250px;
+    }
 }
 
 .title {
@@ -66,6 +111,36 @@ header {
     font-size: 1.25rem;
     color: var(--text-secondary);
     font-weight: 300;
+}
+
+/* Support Minnesota Section */
+.support-minnesota-section {
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.support-btn {
+    display: inline-block;
+    padding: 20px 48px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    background: linear-gradient(135deg, var(--secondary) 0%, #ff4d7d 100%);
+    color: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(255, 107, 157, 0.4);
+    transition: all 0.3s ease;
+}
+
+.support-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(255, 107, 157, 0.6);
+}
+
+.support-btn:active {
+    transform: translateY(-1px);
 }
 
 .cta-section {
